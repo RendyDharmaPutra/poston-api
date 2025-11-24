@@ -6,5 +6,17 @@ const getEnv = (key: string): string => {
 };
 
 export const env = {
-  port: Number(getEnv("PORT")),
+  // Application Environment
+  BOT_SECRET: getEnv("BOT_SECRET"),
+  JWT_SECRET: getEnv("JWT_SECRET"),
+
+  // Server Environment
+  PORT: Number(getEnv("PORT")),
+
+  // Database Environment
+  DB_HOST: getEnv("DB_HOST"),
+  DB_PORT: Number(getEnv("DB_PORT")),
+  DB_USER: getEnv("DB_USER"),
+  DB_PASSWORD: getEnv("DB_PASSWORD"),
+  DB_NAME: getEnv("DB_NAME"),
 };
