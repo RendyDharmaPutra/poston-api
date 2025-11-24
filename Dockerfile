@@ -1,5 +1,5 @@
 # --- Development image ---
-FROM oven/bun:1 AS dev
+FROM oven/bun:alpine AS dev
 
 WORKDIR /app
 
