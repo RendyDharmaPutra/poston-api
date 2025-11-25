@@ -9,6 +9,7 @@
 import { Hono } from "hono";
 import { errorHandler } from "./common/exception/error_handler";
 import { response } from "./common/utils/response";
+import { postModule } from "./modules/post/post.route";
 
 /**
  * The Hono application instance.
@@ -35,3 +36,14 @@ app.onError(errorHandler);
 app.get("/", (c) => {
   return response.success(c, "Hello Hono!");
 });
+
+/**
+ * Defines a route for the "/posts" path. This route is a group of routes related to
+ * managing posts.
+ *
+ * @name /posts
+ * @function
+ * @param {Context} c - The Hono context object.
+ * @returns {Promise<void>} A promise that resolves with the updated Hono context object.
+ */
+app.route("/posts", postModule);
