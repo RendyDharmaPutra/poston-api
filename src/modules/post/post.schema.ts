@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   pgTable,
   serial,
@@ -38,4 +38,6 @@ export const createPostDto = z.object({
   platform: z.string().max(255).nullable(),
 });
 
+export type InserPost = InferInsertModel<typeof posts>;
+export type SelectPost = InferSelectModel<typeof posts>;
 export type CreatePostDto = z.infer<typeof createPostDto>;
