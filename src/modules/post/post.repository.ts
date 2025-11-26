@@ -3,8 +3,8 @@ import { db } from "../../config/db";
 import { InserPost, posts } from "./post.schema";
 
 export class PostRepository {
-  async findAll() {
-    return db.select().from(posts);
+  async findAll(userId: number) {
+    return db.select().from(posts).where(eq(posts.userId, userId));
   }
 
   async findById(id: number) {

@@ -1,5 +1,4 @@
 import { Context } from "hono";
-import { CreatePostDto } from "./post.schema";
 import { PostService } from "./post.service";
 import { response } from "../../common/utils/response";
 
@@ -7,8 +6,18 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   getAll = async (ctx: Context) => {
-    // return this.postService.findAll();
-    return response.success(ctx, "Berhasil mendapatkan data post", []);
+    // Checking request platform in header through middlewware
+
+    // Get UserId based on request platform
+    // A. Extract from jwt for website
+    // B. Fetch user data based on telegram_id for telegram botc // ? Using UserService
+    // ? Dummy UserId
+    const userId = 1;
+
+    // Get all posts
+    const posts = await this.postService.findAll(userId);
+
+    return response.success(ctx, "Berhasil mendapatkan data post", posts);
   };
 
   getOne = async (ctx: Context) => {

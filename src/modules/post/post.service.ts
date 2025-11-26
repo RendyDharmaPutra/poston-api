@@ -1,11 +1,20 @@
+import { HttpError } from "../../common/exception/http_error";
 import { PostRepository } from "./post.repository";
-import { InserPost } from "./post.schema";
+import { CreatePostDto } from "./post.schema";
 
 export class PostService {
   constructor(private postRepository: PostRepository) {}
 
-  async findAll() {
-    return this.postRepository.findAll();
+  async findAll(userId: number) {
+    try {
+      const result = await this.postRepository.findAll(userId);
+      return result;
+    } catch (error) {
+      // ? Error Logging
+      console.log("Post Service: findAll error", JSON.stringify(error));
+
+      throw new HttpError("Gagal mendapatkan data Post");
+    }
   }
 
   async findById(id: number) {
