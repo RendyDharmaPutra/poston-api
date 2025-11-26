@@ -13,21 +13,17 @@ export class PostRepository {
   }
 
   async create(data: InserPost) {
-    const result = await db.insert(posts).values(data).returning();
-    return result[0];
+    const result = await db.insert(posts).values(data);
+    return result;
   }
 
   async update(id: number, data: Partial<InserPost>) {
-    const result = await db
-      .update(posts)
-      .set(data)
-      .where(eq(posts.id, id))
-      .returning();
-    return result[0];
+    const result = await db.update(posts).set(data).where(eq(posts.id, id));
+    return result;
   }
 
   async delete(id: number) {
-    const result = await db.delete(posts).where(eq(posts.id, id)).returning();
-    return result[0];
+    const result = await db.delete(posts).where(eq(posts.id, id));
+    return result;
   }
 }
