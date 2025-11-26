@@ -12,11 +12,11 @@ export class PostService {
     return this.postRepository.findById(id);
   }
 
-  async create(data: InserPost) {
-    return this.postRepository.create(data);
+  async create(data: CreatePostDto) {
+    return this.postRepository.create({ ...data, userId: 1 });
   }
 
-  async update(id: number, data: Partial<InserPost>) {
+  async update(id: number, data: Partial<CreatePostDto>) {
     return this.postRepository.update(id, data);
   }
 
