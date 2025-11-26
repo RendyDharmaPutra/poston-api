@@ -1,24 +1,19 @@
 import { Hono } from "hono";
-import { response } from "../../common/utils/response";
+import { PostController } from "./post.controller";
+import { PostService } from "./post.service";
+import { PostRepository } from "./post.repository";
 
+const postController = new PostController(
+  new PostService(new PostRepository())
+);
 export const postModule = new Hono();
 
-postModule.get("/", (c) => {
-  return response.success(c, "Sukses mengakses endpoint GET /posts");
-});
+postModule.get("/", postController.getAll);
 
-postModule.get("/:id", (c) => {
-  return response.success(c, "Sukses mengakses endpoint GET /posts/:id");
-});
+postModule.get("/:id", postController.getOne);
 
-postModule.post("/", (c) => {
-  return response.success(c, "Sukses mengakses endpoint POST /posts");
-});
+postModule.post("/", postController.create);
 
-postModule.put("/:id", (c) => {
-  return response.success(c, "Sukses mengakses endpoint PUT /posts/:id");
-});
+postModule.put("/:id", postController.update);
 
-postModule.delete("/:id", (c) => {
-  return response.success(c, "Sukses mengakses endpoint DELETE /posts/:id");
-});
+postModule.delete("/:id", postController.delete);
