@@ -3,10 +3,14 @@ import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
 import { PostRepository } from "./post.repository";
 
+import { SourceAuthorization } from "../../common/middlewares/source_authorization";
+
 const postController = new PostController(
   new PostService(new PostRepository())
 );
 export const postModule = new Hono();
+
+postModule.use(SourceAuthorization);
 
 postModule.get("/", postController.getAll);
 
