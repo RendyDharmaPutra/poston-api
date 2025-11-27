@@ -20,7 +20,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const createUserDto = z.object({
   telegramId: z.string().min(1).max(255),
-  username: z.string().max(255),
+  username: z.string().max(255).nullable(),
 });
 
 export type SelectUser = InferSelectModel<typeof users>;
