@@ -23,4 +23,12 @@ export class UserService {
   async delete(id: number) {
     return this.userRepository.delete(id);
   }
+
+  async findOrCreate(telegramId: string) {
+    const user = this.userRepository.findByTelegramId(telegramId);
+
+    if (!user) return this.userRepository.create({ telegramId });
+
+    return user;
+  }
 }

@@ -13,6 +13,15 @@ export class UserRepository {
     return result[0];
   }
 
+  async findByTelegramId(telegramId: string): Promise<SelectUser> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.telegramId, telegramId));
+
+    return result[0];
+  }
+
   async create(data: InsertUser): Promise<SelectUser> {
     const result = await db.insert(users).values(data).returning();
 
