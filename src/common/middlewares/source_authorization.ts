@@ -7,7 +7,7 @@ export const SourceAuthorization = createMiddleware(async (c, next) => {
   const jwtToken = c.req.header("Authorization");
 
   if (botSecretReq) {
-    const telegramId = c.get("X-Telegram-Id");
+    const telegramId = c.req.header("X-Telegram-Id");
 
     if (botSecretReq != env.BOT_SECRET) {
       return response.error(
