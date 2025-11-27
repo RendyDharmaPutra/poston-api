@@ -10,16 +10,25 @@ export class PostController {
   ) {}
 
   getAll = async (ctx: Context) => {
-    // Checking request platform in header through middlewware
-
     // Get UserId based on request platform
-    // A. Extract from jwt for website
-    // B. Fetch user data based on telegram_id for telegram botc // ? Using UserService
-    // ? Dummy UserId
-    const userId = 1;
+    let userId: number;
+
+    const platform = ctx.get("platform");
+
+    if (platform == "web") {
+      // A. Extract from jwt for website
+      userId = 1; // ? Dummy
+    } else if (platform == "bot") {
+      // B. Fetch user data based on telegram_id for telegram bot // ? Using UserService
+      const telegramId = ctx.get("telegramId");
+
+      const user = await this.userService.findOrCreate(telegramId);
+
+      userId = user.id;
+    }
 
     // Get all posts
-    const posts = await this.postService.findAll(userId);
+    const posts = await this.postService.findAll(userId!);
 
     return response.success(ctx, "Berhasil mendapatkan data post", posts);
   };
