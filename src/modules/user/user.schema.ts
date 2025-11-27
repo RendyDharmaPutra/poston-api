@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import z from "zod";
 import { posts } from "../post/post.schema";
@@ -23,4 +23,6 @@ export const createUserDto = z.object({
   username: z.string().max(255),
 });
 
+export type SelectUser = InferSelectModel<typeof users>;
+export type InsertUser = InferInsertModel<typeof users>;
 export type CreateUserDto = z.infer<typeof createUserDto>;
