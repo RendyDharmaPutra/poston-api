@@ -13,12 +13,19 @@ export class UserRepository {
     return result[0];
   }
 
-  async create(data: InsertUser): Promise<QueryResult> {
-    return await db.insert(users).values(data);
+  async create(data: InsertUser): Promise<SelectUser> {
+    const result = await db.insert(users).values(data).returning();
+
+    return result[0];
   }
 
-  async update(id: number, data: Partial<InsertUser>): Promise<QueryResult> {
-    return await db.update(users).set(data).where(eq(users.id, id));
+  async update(id: number, data: Partial<InsertUser>): Promise<SelectUser> {
+    const result = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, id))
+      .returning();
+    return result[0];
   }
 
   async delete(id: number): Promise<QueryResult> {
