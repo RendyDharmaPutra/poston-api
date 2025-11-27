@@ -1,3 +1,4 @@
+import { HttpError } from "../../common/exception/http_error";
 import { UserRepository } from "./user.repository";
 import { CreateUserDto } from "./user.schema";
 
@@ -25,10 +26,17 @@ export class UserService {
   }
 
   async findOrCreate(telegramId: string) {
-    const user = this.userRepository.findByTelegramId(telegramId);
+    try {
+      const user = await this.userRepository.findByTelegramId(telegramId);
 
-    if (!user) return this.userRepository.create({ telegramId });
+      if (!user) return this.userRepository.create({ telegramId });
 
-    return user;
+      return user;
+    } catch (error) {
+      // ? Error Logging
+      console.log("User Service: findOrCreate error", JSON.stringify(error));
+
+      throw new HttpError("Gagal membuat atau menemukan pengguna");
+    }
   }
 }
