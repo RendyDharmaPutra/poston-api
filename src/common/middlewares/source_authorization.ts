@@ -9,10 +9,7 @@ export const SourceAuthorization = createMiddleware(async (c, next) => {
   if (botSecretReq) {
     const telegramId = c.get("X-Telegram-Id");
 
-    const botSecretIsValid = botSecretReq === env.BOT_SECRET;
-    const telegramIdExists = !!telegramId;
-
-    if (!botSecretIsValid) {
+    if (botSecretReq != env.BOT_SECRET) {
       return response.error(
         c,
         "Akses tidak diijinkan",
@@ -21,7 +18,7 @@ export const SourceAuthorization = createMiddleware(async (c, next) => {
       );
     }
 
-    if (!telegramIdExists) {
+    if (!telegramId) {
       return response.error(
         c,
         "Akses tidak diijinkan",
