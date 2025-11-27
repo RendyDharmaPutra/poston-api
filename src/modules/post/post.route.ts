@@ -1,16 +1,10 @@
 import { Hono } from "hono";
 import { PostController } from "./post.controller";
-import { PostService } from "./post.service";
-import { PostRepository } from "./post.repository";
-
+import { postService } from ".";
+import { userService } from "../user";
 import { SourceAuthorization } from "../../common/middlewares/source_authorization";
-import { UserService } from "../user/user.service";
-import { UserRepository } from "../user/user.repository";
 
-const postController = new PostController(
-  new PostService(new PostRepository()),
-  new UserService(new UserRepository())
-);
+const postController = new PostController(postService, userService);
 export const postModule = new Hono();
 
 postModule.use(SourceAuthorization);
