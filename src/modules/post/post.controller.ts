@@ -1,9 +1,13 @@
 import { Context } from "hono";
 import { PostService } from "./post.service";
 import { response } from "../../common/utils/response";
+import { UserService } from "../user/user.service";
 
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private userService: UserService
+  ) {}
 
   getAll = async (ctx: Context) => {
     // Checking request platform in header through middlewware
