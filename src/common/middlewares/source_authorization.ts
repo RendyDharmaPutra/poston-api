@@ -7,7 +7,9 @@ export const SourceAuthorization = createMiddleware(async (c, next) => {
   const jwtToken = c.req.header("Authorization");
 
   if (botSecretReq) {
-    if (botSecretReq !== env.BOT_SECRET)
+    const telegramId = c.get("X-Telegram-Id");
+
+    if (botSecretReq !== env.BOT_SECRET || !telegramId)
       return response.error(
         c,
         "Akses tidak diijinkan",
@@ -16,6 +18,7 @@ export const SourceAuthorization = createMiddleware(async (c, next) => {
       );
 
     c.set("platform", "bot");
+    c.set("telegramId", telegramId);
   } else if (jwtToken) {
     /* 
        Todo :
