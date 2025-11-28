@@ -3,6 +3,8 @@ import { PostService } from "./post.service";
 import { response } from "../../common/utils/response";
 import { UserService } from "../user/user.service";
 import { getUserIdFromContext } from "../../common/helpers/get_user_id";
+import { createPostDto } from "./post.schema";
+import { safeParseBody } from "../../common/helpers/body";
 
 export class PostController {
   constructor(
@@ -25,8 +27,16 @@ export class PostController {
   };
 
   create = async (ctx: Context) => {
+    const userId = await getUserIdFromContext(ctx, this.userService);
+
+    const body = await safeParseBody(
+      ctx,
+      createPostDto,
+      "Gagal menyimpan data post"
+    );
+
     // return this.postService.create(data);
-    return response.success(ctx, "Berhasil menyimpan data post", []);
+    return response.success(ctx, "Berhasil menyimpan data post", userId);
   };
 
   update = async (ctx: Context) => {
