@@ -1,4 +1,5 @@
 import { HttpError } from "../../common/exception/http_error";
+import { extractMetadata } from "../../common/utils/metadata/metadata_extractor";
 import { PostRepository } from "./post.repository";
 import { CreatePostDto } from "./post.schema";
 
@@ -22,9 +23,9 @@ export class PostService {
   }
 
   async create(data: CreatePostDto, userId: number) {
-    // ? debug
-    console.log(data);
-    console.log(userId);
+    const metadata = await extractMetadata(data.url);
+
+    console.log(metadata);
 
     return this.postRepository.create({ ...data, userId });
   }
