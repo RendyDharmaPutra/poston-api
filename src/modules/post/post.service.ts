@@ -12,7 +12,7 @@ export class PostService {
       return result;
     } catch (error) {
       // ? Error Logging
-      console.log("Post Service: findAll error", JSON.stringify(error));
+      console.error("Post Service: findAll error", JSON.stringify(error));
 
       throw new HttpError("Gagal mendapatkan data Post");
     }
@@ -23,21 +23,27 @@ export class PostService {
   }
 
   async create(data: CreatePostDto, userId: number) {
-    // Check if only the URL is input
-    if (!data.description && !data.title && !data.platform) {
-      // Extract metadata when only URL is provided
-      const metadata = await extractMetadata(data.url);
+    try {
+      // Check if only the URL is input
+      if (!data.description && !data.title && !data.platform) {
+        // Extract metadata when only URL is provided
+        const metadata = await extractMetadata(data.url);
 
-      data = {
-        ...data,
-        title: data.title || metadata.title,
-        description: data.description || metadata.description,
-        platform: data.platform || metadata.platform,
-      };
+        data = {
+          ...data,
+          title: data.title || metadata.title,
+          description: data.description || metadata.description,
+          platform: data.platform || metadata.platform,
+        };
+      }
+
+      // If not, the data will be input according to what is input
+      return this.postRepository.create({ ...data, userId });
+    } catch (error) {
+      console.error("Post Service: create error", error);
+
+      throw new HttpError("Gagal menyimpan data post");
     }
-
-    // If not, the data will be input according to what is input
-    return this.postRepository.create({ ...data, userId });
   }
 
   async update(id: number, data: Partial<CreatePostDto>) {
