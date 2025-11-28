@@ -35,8 +35,8 @@ export class PostController {
       "Gagal menyimpan data post"
     );
 
-    // return this.postService.create(data);
-    return response.success(ctx, "Berhasil menyimpan data post", userId);
+    const post = await this.postService.create(body, userId!);
+    return response.success(ctx, "Berhasil menyimpan data post", post);
   };
 
   update = async (ctx: Context) => {

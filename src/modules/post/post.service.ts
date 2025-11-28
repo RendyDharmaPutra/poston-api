@@ -21,8 +21,12 @@ export class PostService {
     return this.postRepository.findById(id);
   }
 
-  async create(data: CreatePostDto) {
-    return this.postRepository.create({ ...data, userId: 1 });
+  async create(data: CreatePostDto, userId: number) {
+    // ? debug
+    console.log(data);
+    console.log(userId);
+
+    return this.postRepository.create({ ...data, userId });
   }
 
   async update(id: number, data: Partial<CreatePostDto>) {
