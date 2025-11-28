@@ -2,6 +2,7 @@ import { Context } from "hono";
 import { PostService } from "./post.service";
 import { response } from "../../common/utils/response";
 import { UserService } from "../user/user.service";
+import { getUserIdFromContext } from "../../common/helpers/get_user_id";
 
 export class PostController {
   constructor(
@@ -10,22 +11,7 @@ export class PostController {
   ) {}
 
   getAll = async (ctx: Context) => {
-    // Get UserId based on request platform
-    let userId: number;
-
-    const platform = ctx.get("platform");
-
-    if (platform == "web") {
-      // A. Extract from jwt for website
-      userId = 1; // ? Dummy
-    } else if (platform == "bot") {
-      // B. Fetch user data based on telegram_id for telegram bot // ? Using UserService
-      const telegramId = ctx.get("telegramId");
-
-      const user = await this.userService.findOrCreate(telegramId);
-
-      userId = user.id;
-    }
+    const userId = await getUserIdFromContext(ctx, this.userService);
 
     // Get all posts
     const posts = await this.postService.findAll(userId!);
