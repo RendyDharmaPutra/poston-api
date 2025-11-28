@@ -32,10 +32,29 @@ export const postsRelations = relations(posts, ({ one }) => ({
 }));
 
 export const createPostDto = z.object({
-  title: z.string().max(255).nullable().optional(),
-  description: z.string().max(255).nullable().optional(),
-  url: z.string().min(1).max(255),
-  platform: z.string().max(255).nullable().optional(),
+  title: z
+    .string("Format title tidak valid")
+    .max(255, "Panjang title maksimal 255 karakter")
+    .nullable()
+    .optional(),
+
+  description: z
+    .string("Format description tidak valid")
+    .max(255, "Panjang description maksimal 255 karakter")
+    .nullable()
+    .optional(),
+
+  url: z
+    .string("Format url tidak valid")
+    .url("Format url tidak valid")
+    .min(11, "Panjang url minimal 11 karakter")
+    .max(255, "Panjang url maksimal 255 karakter"),
+
+  platform: z
+    .string("Format platform tidak valid")
+    .max(255, "Panjang platform maksimal 255 karakter")
+    .nullable()
+    .optional(),
 });
 
 export type InserPost = InferInsertModel<typeof posts>;
