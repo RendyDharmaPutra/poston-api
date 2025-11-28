@@ -23,10 +23,20 @@ export class PostService {
   }
 
   async create(data: CreatePostDto, userId: number) {
-    const metadata = await extractMetadata(data.url);
+    // Check if only the URL is input
+    if (!data.description && !data.title && !data.platform) {
+      // Extract metadata when only URL is provided
+      const metadata = await extractMetadata(data.url);
 
-    console.log(metadata);
+      data = {
+        ...data,
+        title: data.title || metadata.title,
+        description: data.description || metadata.description,
+        platform: data.platform || metadata.platform,
+      };
+    }
 
+    // If not, the data will be input according to what is input
     return this.postRepository.create({ ...data, userId });
   }
 
