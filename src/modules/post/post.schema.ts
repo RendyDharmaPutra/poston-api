@@ -32,10 +32,10 @@ export const postsRelations = relations(posts, ({ one }) => ({
 }));
 
 export const createPostDto = z.object({
-  title: z.string().max(255).nullable(),
-  description: z.string().max(255).nullable(),
+  title: z.string().max(255).nullable().optional(),
+  description: z.string().max(255).nullable().optional(),
   url: z.string().min(1).max(255),
-  platform: z.string().max(255).nullable(),
+  platform: z.string().max(255).nullable().optional(),
 });
 
 export type InserPost = InferInsertModel<typeof posts>;
