@@ -2,13 +2,14 @@ import { HttpError } from "../../common/exception/http_error";
 import { extractMetadata } from "../../common/utils/metadata/metadata_extractor";
 import { PostRepository } from "./post.repository";
 import { CreatePostDto } from "./post.schema";
+import { PaginationQueryDto } from "../../common/dto/pagination.dto";
 
 export class PostService {
   constructor(private postRepository: PostRepository) {}
 
-  async findAll(userId: number) {
+  async findAll(userId: number, pagination: PaginationQueryDto) {
     try {
-      const result = await this.postRepository.findAll(userId);
+      const result = await this.postRepository.findAll(userId, pagination);
       return result;
     } catch (error) {
       // ? Error Logging

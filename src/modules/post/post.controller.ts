@@ -5,6 +5,8 @@ import { UserService } from "../user/user.service";
 import { getUserIdFromContext } from "../../common/helpers/get_user_id";
 import { createPostDto } from "./post.schema";
 import { safeParseBody } from "../../common/helpers/body";
+import { parseQuery } from "../../common/helpers/query";
+import { paginationQueryDto } from "../../common/dto/pagination.dto";
 
 export class PostController {
   constructor(
@@ -15,8 +17,10 @@ export class PostController {
   getAll = async (ctx: Context) => {
     const userId = await getUserIdFromContext(ctx, this.userService);
 
+    const pagination = parseQuery(ctx, paginationQueryDto);
+
     // Get all posts
-    const posts = await this.postService.findAll(userId!);
+    const posts = await this.postService.findAll(userId!, pagination);
 
     return response.success(ctx, "Berhasil mendapatkan data post", posts);
   };
