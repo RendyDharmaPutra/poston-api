@@ -12,11 +12,6 @@ export const response = {
    * Send a success response with an optional data payload.
    *
    * @function success
-   * @param {Context} c - The Hono context object.
-   * @param {string} message - The success message.
-   * @param {T} [data] - Optional data payload.
-   * @param {ContentfulStatusCode} [status=200] - The HTTP status code.
-   * @returns {Promise<void>} A promise that resolves with the updated Hono context object.
    */
   success<T>(
     c: Context,
@@ -41,14 +36,32 @@ export const response = {
   },
 
   /**
+   * Send a success response with data list and meta information (pagination, etc.)
+   *
+   * @function successWithMeta
+   */
+  successWithMeta<T>(
+    c: Context,
+    message: string,
+    data: T[],
+    meta: Record<string, any>,
+    status: ContentfulStatusCode = 200
+  ) {
+    return c.json(
+      {
+        success: true,
+        message,
+        data,
+        meta,
+      },
+      status
+    );
+  },
+
+  /**
    * Send an error response.
    *
    * @function error
-   * @param {Context} c - The Hono context object.
-   * @param {string} message - The error message.
-   * @param {string} [error="Terjadi kesalahan tidak diketahui"] - The error description.
-   * @param {ContentfulStatusCode} [status=500] - The HTTP status code.
-   * @returns {Promise<void>} A promise that resolves with the updated Hono context object.
    */
   error(
     c: Context,
@@ -70,11 +83,6 @@ export const response = {
    * Send a validation error response.
    *
    * @function validationError
-   * @param {Context} c - The Hono context object.
-   * @param {string} message - The validation error message.
-   * @param {T} details - The validation error details.
-   * @param {string} [error="Terjadi kesalahan pada validasi data"] - The validation error description.
-   * @returns {Promise<void>} A promise that resolves with the updated Hono context object.
    */
   validationError<T>(
     c: Context,
