@@ -22,7 +22,12 @@ export class PostController {
     // Get all posts
     const posts = await this.postService.findAll(userId!, pagination);
 
-    return response.success(ctx, "Berhasil mendapatkan data post", posts);
+    return response.successWithMeta(
+      ctx,
+      "Berhasil mendapatkan data post",
+      posts.data,
+      posts.meta
+    );
   };
 
   getOne = async (ctx: Context) => {
