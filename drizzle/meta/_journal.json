@@ -15,6 +15,13 @@
       "when": 1764037549158,
       "tag": "0001_brave_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765819393316,
+      "tag": "0002_familiar_maelstrom",
+      "breakpoints": true
     }
   ]
 }

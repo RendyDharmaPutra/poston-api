@@ -12,8 +12,7 @@ import { users } from "../user/user.schema";
 
 export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
-  title: varchar("title"),
-  description: text("description"),
+  caption: text("caption"),
   platform: varchar("platform"),
   url: text("url").notNull(),
   userId: integer("user_id").notNull(),
@@ -32,15 +31,9 @@ export const postsRelations = relations(posts, ({ one }) => ({
 }));
 
 export const createPostDto = z.object({
-  title: z
-    .string("Format title tidak valid")
-    .max(255, "Panjang title maksimal 255 karakter")
-    .nullable()
-    .optional(),
-
-  description: z
-    .string("Format description tidak valid")
-    .max(255, "Panjang description maksimal 255 karakter")
+  caption: z
+    .string("Format caption tidak valid")
+    .max(255, "Panjang caption maksimal 255 karakter")
     .nullable()
     .optional(),
 
