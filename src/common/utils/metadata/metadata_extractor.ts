@@ -43,9 +43,7 @@ export async function extractMetadata(url: string) {
 
     return {
       // Fallbacks ensure valid metadata even if OG/Twitter tags are incomplete.
-      title: result.ogTitle || result.twitterTitle || "Unknown",
-      description:
-        result.ogDescription || result.twitterDescription || "Unknown",
+      caption: result.ogTitle || result.twitterTitle || "Unknown",
 
       // Platform detection via og:site_name is not always accurate,
       // but serves as a general categorization fallback.
@@ -53,8 +51,7 @@ export async function extractMetadata(url: string) {
     };
   } catch {
     return {
-      title: "Unknown",
-      description: "Unknown",
+      caption: "Unknown",
       platform: "Unknown",
     };
   }

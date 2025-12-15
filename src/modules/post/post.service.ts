@@ -26,15 +26,14 @@ export class PostService {
   async create(data: CreatePostDto, userId: number) {
     try {
       // Check if only the URL is input
-      if (!data.description && !data.title && !data.platform) {
+      if (!data.caption && !data.platform) {
         // Extract metadata when only URL is provided
         const metadata = await extractMetadata(data.url);
 
         data = {
           ...data,
-          title: data.title || metadata.title,
-          description: data.description || metadata.description,
-          platform: data.platform || metadata.platform,
+          caption: metadata.caption,
+          platform: metadata.platform,
         };
       }
 
