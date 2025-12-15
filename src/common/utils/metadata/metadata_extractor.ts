@@ -38,15 +38,24 @@ export async function extractMetadata(url: string) {
   //   - Missing OG tags fallback
   //   - Bot protection workarounds
   //   - Twitter Card metadata
-  const { result } = await ogs({ url });
+  try {
+    const { result } = await ogs({ url });
 
-  return {
-    // Fallbacks ensure valid metadata even if OG/Twitter tags are incomplete.
-    title: result.ogTitle || result.twitterTitle || "Unknown",
-    description: result.ogDescription || result.twitterDescription || "Unknown",
+    return {
+      // Fallbacks ensure valid metadata even if OG/Twitter tags are incomplete.
+      title: result.ogTitle || result.twitterTitle || "Unknown",
+      description:
+        result.ogDescription || result.twitterDescription || "Unknown",
 
-    // Platform detection via og:site_name is not always accurate,
-    // but serves as a general categorization fallback.
-    platform: result.ogSiteName || "Other",
-  };
+      // Platform detection via og:site_name is not always accurate,
+      // but serves as a general categorization fallback.
+      platform: result.ogSiteName || "Other",
+    };
+  } catch {
+    return {
+      title: "Unknown",
+      description: "Unknown",
+      platform: "Unknown",
+    };
+  }
 }
