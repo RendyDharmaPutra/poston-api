@@ -4,6 +4,7 @@
     "": {
       "name": "poston-api",
       "dependencies": {
+        "cheerio": "^1.1.2",
         "drizzle-orm": "^0.44.7",
         "hono": "^4.10.6",
         "open-graph-scraper": "^6.11.0",
