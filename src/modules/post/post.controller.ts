@@ -24,7 +24,7 @@ export class PostController {
 
     return response.successWithMeta(
       ctx,
-      "Berhasil mendapatkan data post",
+      "Berhasil mendapatkan daftar postingan",
       posts.data,
       posts.meta
     );
@@ -32,7 +32,7 @@ export class PostController {
 
   getOne = async (ctx: Context) => {
     // return this.postService.findById(id);
-    return response.success(ctx, "Berhasil mendapatkan data post", []);
+    return response.success(ctx, "Berhasil mendapatkan postingan", []);
   };
 
   create = async (ctx: Context) => {
@@ -41,20 +41,20 @@ export class PostController {
     const body = await safeParseBody(
       ctx,
       createPostDto,
-      "Gagal menyimpan data post"
+      "Gagal menyimpan postingan"
     );
 
     await this.postService.create(body, userId!);
-    return response.success(ctx, "Berhasil menyimpan data post");
+    return response.success(ctx, "Berhasil menyimpan postingan");
   };
 
   update = async (ctx: Context) => {
     // return this.postService.update(id, data);
-    return response.success(ctx, "Berhasil memperbarui data post", []);
+    return response.success(ctx, "Berhasil memperbarui postingan", []);
   };
 
   delete = async (ctx: Context) => {
     // return this.postService.delete(id);
-    return response.success(ctx, "Berhasil menghapus data post", []);
+    return response.success(ctx, "Berhasil menghapus postingan", []);
   };
 }
