@@ -46,8 +46,8 @@ export class PostRepository {
   }
 
   async create(data: InserPost) {
-    const result = await db.insert(posts).values(data);
-    return result;
+    const result = await db.insert(posts).values(data).returning();
+    return result[0];
   }
 
   async update(id: number, data: Partial<InserPost>) {
