@@ -1,21 +1,23 @@
 import * as cheerio from "cheerio";
 
 /**
- * Extract metadata from a given URL using a hybrid strategy.
+ * Extract metadata from a given URL using Cheerio for HTML parsing.
  *
  * This function is designed to:
- * 1. Identify the platform of the URL (YouTube, TikTok, Instagram, etc.)
- * 2. Automatically choose the best extraction strategy:
- *    - Platforms that block manual scraping → use OGS (safer & more reliable)
- *    - Platforms that allow HTML access → use Cheerio (faster & lighter)
+ * 1. Identify the platform of the URL (YouTube, TikTok, Instagram, etc.).
+ * 2. Use Cheerio to parse the HTML and extract metadata.
  * 3. Provide normalized metadata output (title, description, platform).
  *
- * Since this version demonstrates OGS extraction only,
- * the fallback logic and decision matrix can be expanded later
+ * Since this version demonstrates Cheerio extraction only,
  * to integrate platform-specific rules and manual-scraping paths.
  *
  * @param url - The URL of the post/page to extract metadata from.
- * @returns Extracted metadata containing title, description, and platform name.
+ * @returns A promise that resolves to an object containing the extracted metadata.
+ *          The object has the following properties:
+ *          - caption: The extracted title or description of the post/page.
+ *          - platform: The platform of the URL.
+ * @throws If there is an error fetching the URL or parsing the HTML,
+ *         the function will throw an error with a message describing the issue.
  */
 
 function getRootDomain(hostname: string) {
