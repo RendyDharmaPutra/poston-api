@@ -1,4 +1,4 @@
-import ogs from "open-graph-scraper";
+import * as cheerio from "cheerio";
 
 /**
  * Extract metadata from a given URL using a hybrid strategy.
@@ -17,39 +17,40 @@ import ogs from "open-graph-scraper";
  * @param url - The URL of the post/page to extract metadata from.
  * @returns Extracted metadata containing title, description, and platform name.
  */
-export async function extractMetadata(url: string) {
-  /**
-   * PERFORMANCE OPTIMIZATION GUIDELINES
-   * ==================================
-   * - Avoid performing platform detection too late; do it early to prevent unnecessary fetch overhead.
-   * - Cache results for repeated URLs to avoid scraping the same page multiple times.
-   * - Prefer Cheerio for platforms with stable HTML (news sites, blogs, Medium) because:
-   *      → It is faster, lighter, and does not rely on external parsing.
-   * - Use OGS only when necessary (Instagram, Facebook, TikTok, Twitter) because:
-   *      → These platforms block manual scraping and break Cheerio-based parsing.
-   * - Consider parallelizing fetch operations only when multiple URLs must be processed at once.
-   * - Add user-agent spoofing if OGS or Cheerio fail on stricter platforms.
-   * - Avoid running extraction in critical request paths; use asynchronous job queues when needed.
-   */
 
-  // Use Open Graph Scraper (OGS) as the primary extraction engine.
-  // OGS automatically handles:
-  //   - Redirect chains
-  //   - Missing OG tags fallback
-  //   - Bot protection workarounds
-  //   - Twitter Card metadata
+function getRootDomain(hostname: string) {
+  const parts = hostname.split(".");
+  if (parts.length <= 2) return hostname;
+  return parts.slice(-2).join(".");
+}
+
+export async function extractMetadata(url: string) {
   try {
-    const { result } = await ogs({ url });
+    const res = await fetch(url, {
+      headers: { "User-Agent": "LinkPreviewBot/1.0" },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    const html = await res.text();
+    const $ = cheerio.load(html);
+
+    const platform =
+      $('meta[property="og:site_name"]').attr("content") ??
+      getRootDomain(new URL(url).hostname);
+
+    const caption =
+      platform === "Instagram" || platform === "YouTube"
+        ? $('meta[property="og:title"]').attr("content") || $("title").text()
+        : $('meta[property="og:description"]').attr("content") ||
+          $('meta[name="description"]').attr("content");
 
     return {
-      // Fallbacks ensure valid metadata even if OG/Twitter tags are incomplete.
-      caption: result.ogTitle || result.twitterTitle || "Unknown",
-
-      // Platform detection via og:site_name is not always accurate,
-      // but serves as a general categorization fallback.
-      platform: result.ogSiteName || "Other",
+      caption,
+      platform,
     };
-  } catch {
+  } catch (error) {
+    console.error("Error extracting metadata:", error);
+
     return {
       caption: "Unknown",
       platform: "Unknown",
