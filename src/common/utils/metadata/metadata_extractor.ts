@@ -47,7 +47,7 @@ export async function extractMetadata(url: string) {
           $('meta[name="description"]').attr("content");
 
     return {
-      caption,
+      caption: caption ?? "No Caption",
       platform,
     };
   } catch (error) {
