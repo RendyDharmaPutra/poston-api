@@ -40,6 +40,7 @@ export async function extractMetadata(url: string) {
       $('meta[property="og:site_name"]').attr("content") ??
       getRootDomain(new URL(url).hostname);
 
+    // caption is in title for Instagram
     const caption =
       platform === "Instagram" || platform === "YouTube"
         ? $('meta[property="og:title"]').attr("content") || $("title").text()
