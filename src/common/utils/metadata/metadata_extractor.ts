@@ -1,55 +1,59 @@
-import ogs from "open-graph-scraper";
+import * as cheerio from "cheerio";
 
 /**
- * Extract metadata from a given URL using a hybrid strategy.
+ * Extract metadata from a given URL using Cheerio for HTML parsing.
  *
  * This function is designed to:
- * 1. Identify the platform of the URL (YouTube, TikTok, Instagram, etc.)
- * 2. Automatically choose the best extraction strategy:
- *    - Platforms that block manual scraping → use OGS (safer & more reliable)
- *    - Platforms that allow HTML access → use Cheerio (faster & lighter)
+ * 1. Identify the platform of the URL (YouTube, TikTok, Instagram, etc.).
+ * 2. Use Cheerio to parse the HTML and extract metadata.
  * 3. Provide normalized metadata output (title, description, platform).
  *
- * Since this version demonstrates OGS extraction only,
- * the fallback logic and decision matrix can be expanded later
+ * Since this version demonstrates Cheerio extraction only,
  * to integrate platform-specific rules and manual-scraping paths.
  *
  * @param url - The URL of the post/page to extract metadata from.
- * @returns Extracted metadata containing title, description, and platform name.
+ * @returns A promise that resolves to an object containing the extracted metadata.
+ *          The object has the following properties:
+ *          - caption: The extracted title or description of the post/page.
+ *          - platform: The platform of the URL.
+ * @throws If there is an error fetching the URL or parsing the HTML,
+ *         the function will throw an error with a message describing the issue.
  */
-export async function extractMetadata(url: string) {
-  /**
-   * PERFORMANCE OPTIMIZATION GUIDELINES
-   * ==================================
-   * - Avoid performing platform detection too late; do it early to prevent unnecessary fetch overhead.
-   * - Cache results for repeated URLs to avoid scraping the same page multiple times.
-   * - Prefer Cheerio for platforms with stable HTML (news sites, blogs, Medium) because:
-   *      → It is faster, lighter, and does not rely on external parsing.
-   * - Use OGS only when necessary (Instagram, Facebook, TikTok, Twitter) because:
-   *      → These platforms block manual scraping and break Cheerio-based parsing.
-   * - Consider parallelizing fetch operations only when multiple URLs must be processed at once.
-   * - Add user-agent spoofing if OGS or Cheerio fail on stricter platforms.
-   * - Avoid running extraction in critical request paths; use asynchronous job queues when needed.
-   */
 
-  // Use Open Graph Scraper (OGS) as the primary extraction engine.
-  // OGS automatically handles:
-  //   - Redirect chains
-  //   - Missing OG tags fallback
-  //   - Bot protection workarounds
-  //   - Twitter Card metadata
+function getRootDomain(hostname: string) {
+  const parts = hostname.split(".");
+  if (parts.length <= 2) return hostname;
+  return parts.slice(-2).join(".");
+}
+
+export async function extractMetadata(url: string) {
   try {
-    const { result } = await ogs({ url });
+    const res = await fetch(url, {
+      headers: { "User-Agent": "LinkPreviewBot/1.0" },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    const html = await res.text();
+    const $ = cheerio.load(html);
+
+    const platform =
+      $('meta[property="og:site_name"]').attr("content") ??
+      getRootDomain(new URL(url).hostname);
+
+    // caption is in title for Instagram
+    const caption =
+      platform === "Instagram" || platform === "YouTube"
+        ? $('meta[property="og:title"]').attr("content") || $("title").text()
+        : $('meta[property="og:description"]').attr("content") ||
+          $('meta[name="description"]').attr("content");
 
     return {
-      // Fallbacks ensure valid metadata even if OG/Twitter tags are incomplete.
-      caption: result.ogTitle || result.twitterTitle || "Unknown",
-
-      // Platform detection via og:site_name is not always accurate,
-      // but serves as a general categorization fallback.
-      platform: result.ogSiteName || "Other",
+      caption: caption ?? "No Caption",
+      platform,
     };
-  } catch {
+  } catch (error) {
+    console.error("Error extracting metadata:", error);
+
     return {
       caption: "Unknown",
       platform: "Unknown",
